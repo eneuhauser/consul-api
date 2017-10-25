@@ -20,6 +20,9 @@ public class Self {
 
 	public static class Config {
 
+		@SerializedName("Self")
+		private Self self;
+		
 		@SerializedName("Datacenter")
 		private String datacenter;
 
@@ -34,6 +37,14 @@ public class Self {
 
 		@SerializedName("Version")
 		private String version;
+
+		public Self getSelf() {
+			return self;
+		}
+
+		public void setSelf(Self self) {
+			this.self = self;
+		}
 
 		public String getDatacenter() {
 			return datacenter;
@@ -74,10 +85,34 @@ public class Self {
 		public void setVersion(String version) {
 			this.version = version;
 		}
-
+		
+		@Deprecated
+		public String getAdvertiseAddress() {
+			DebugConfig debugConfig = self.getDebugConfig();
+			return (debugConfig == null) ? null : debugConfig.getAdvertiseAddressLan();
+		}
+		
+		@Deprecated
+		public String getDomain() {
+			DebugConfig debugConfig = self.getDebugConfig();
+			return (debugConfig == null) ? null : debugConfig.getDnsDomain();
+		}
+		
+		@Deprecated
+		public String getBindAddress() {
+			DebugConfig debugConfig = self.getDebugConfig();
+			return (debugConfig == null) ? null : debugConfig.getBindAddress();
+		}
+		
+		@Deprecated
+		public String getClientAddress() {
+			DebugConfig debugConfig = self.getDebugConfig();
+			return (debugConfig == null) ? null : debugConfig.getClientAddress();
+		}
+		
 		@Override
 		public String toString() {
-			return "DebugConfig{" +
+			return "Config{" +
 							"datacenter='" + datacenter + "'" +
 							", nodeName='" + nodeName + "'" +
 							", revision='" + revision + '\'' +
@@ -113,6 +148,12 @@ public class Self {
 
 		@SerializedName("BindAddr")
 		private String bindAddress;
+
+		@SerializedName("AdvertiseAddrLAN")
+		private String advertiseAddressLan;
+
+		@SerializedName("AdvertiseAddrWAN")
+		private String advertiseAddressWan;
 
 		@SerializedName("LeaveOnTerm")
 		private boolean leaveOnTerm;
@@ -199,6 +240,15 @@ public class Self {
 			this.nodeId = nodeId;
 		}
 
+		public String getClientAddress() {
+				return clientAddresses == null || clientAddresses.length < 1 ? null : clientAddresses[0];
+		}
+		
+		public void setClientAddress(String clientAddress) {
+				String[] clientAddresses = { clientAddress };
+				this.setClientAddresses(clientAddresses);
+		}
+		
 		public String[] getClientAddresses() {
 			return clientAddresses;
 		}
@@ -214,7 +264,23 @@ public class Self {
 		public void setBindAddress(String bindAddress) {
 			this.bindAddress = bindAddress;
 		}
-
+		
+		public String getAdvertiseAddressLan() {
+			return advertiseAddressLan;
+		}
+		
+		public void setAdvertiseAddressLan(String advertiseAddressLan) {
+			this.advertiseAddressLan = advertiseAddressLan;
+		}
+		
+		public String getAdvertiseAddressWan() {
+			return advertiseAddressWan;
+		}
+		
+		public void setAdvertiseAddressWan(String advertiseAddressWan) {
+			this.advertiseAddressWan = advertiseAddressWan;
+		}
+		
 		public boolean isLeaveOnTerm() {
 			return leaveOnTerm;
 		}
@@ -314,7 +380,7 @@ public class Self {
 
 		@Override
 		public String toString() {
-			return "Config{" +
+			return "DebugConfig{" +
 							"bootstrap=" + bootstrap +
 							", dataDir='" + dataDir + '\'' +
 							", dnsRecursor='" + dnsRecursor + '\'' +
@@ -323,6 +389,8 @@ public class Self {
 							", nodeId='" + nodeId + '\'' +
 							", clientAddresses='" + clientAddresses + '\'' +
 							", bindAddress='" + bindAddress + '\'' +
+							", advertiseAddressLan='" + advertiseAddressLan + '\'' +
+							", advertiseAddressWan='" + advertiseAddressWan + '\'' +
 							", leaveOnTerm=" + leaveOnTerm +
 							", skipLeaveOnInt=" + skipLeaveOnInt +
 							", enableDebug=" + enableDebug +
@@ -355,6 +423,9 @@ public class Self {
 	}
 
 	public void setConfig(Config config) {
+		if (config != null) {
+			config.setSelf(this);
+		}
 		this.config = config;
 	}
 
