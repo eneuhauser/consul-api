@@ -1,7 +1,6 @@
 apply plugin: "java"
 apply plugin: "idea"
 apply plugin: 'maven'
-apply plugin: 'signing'
 
 repositories {
 	mavenCentral()
@@ -38,27 +37,19 @@ artifacts {
 	archives javadocJar
 }
 
-def doUploadArchives = project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
-if (doUploadArchives) {
-	group = "com.ecwid.consul"
-	archivesBaseName = "consul-api"
-	version = "1.2.4"
+group = "com.ecwid.consul"
+archivesBaseName = "consul-api"
+version = "1.2.5.RC6"
 
-	signing {
-		sign configurations.archives
-	}
-
-	uploadArchives {
+uploadArchives {
 		repositories {
 			mavenDeployer {
-				beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-				repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-					authentication(userName: sonatypeUsername, password: sonatypePassword)
+				repository(url: "http://repo.c2fo.com/artifactory/libs-release/") {
+					authentication(userName: artifactoryUsername, password: artifactoryPassword)
 				}
 
-				snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-					authentication(userName: sonatypeUsername, password: sonatypePassword)
+				snapshotRepository(url: "http://repo.c2fo.com/artifactory/libs-snapshot/") {
+					authentication(userName: artifactoryUsername, password: artifactoryPassword)
 				}
 
 				pom.project {
@@ -90,7 +81,6 @@ if (doUploadArchives) {
 				}
 			}
 		}
-	}
 }
 
 // --------------------------------------------------------------

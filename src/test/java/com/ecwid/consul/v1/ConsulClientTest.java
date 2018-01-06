@@ -5,7 +5,9 @@ import com.ecwid.consul.v1.agent.model.NewService;
 import com.ecwid.consul.v1.agent.model.Service;
 import com.pszymczyk.consul.ConsulProcess;
 import com.pszymczyk.consul.ConsulStarterBuilder;
+import com.pszymczyk.consul.ConsulPorts;
 import com.pszymczyk.consul.infrastructure.Ports;
+import com.pszymczyk.consul.LogLevel;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.After;
 import org.junit.Before;
@@ -23,24 +25,12 @@ public class ConsulClientTest {
 
     @Before
     public void setup() {
-        String path = "src/test/resources/ssl";
-        String certRootPath = new File(path).getAbsolutePath();
-        //language=JSON
-        String customConfiguration =
-                "{\n" +
-                "  \"datacenter\": \"dc-test\",\n" +
-                "  \"log_level\": \"info\",\n" +
-                "  \"ports\": {\n" +
-                "    \"https\": "+ randomHttpsPort+ "\n" +
-                "  },\n" +
-                "  \"ca_file\": \"" + certRootPath + "/ca.cert\",\n" +
-                "  \"key_file\": \"" + certRootPath + "/key.key\",\n" +
-                "  \"cert_file\": \"" + certRootPath + "/key.crt\"\n" +
-                "}\n";
-
         consul = ConsulStarterBuilder.consulStarter()
                 .withConsulVersion("1.0.0")
-                .withCustomConfig(customConfiguration)
+				.withLogLevel(LogLevel.INFO)
+				.withConsulPorts(ConsulPorts.consulPorts()
+					.withServerPort(randomHttpsPort)
+					.build())
                 .build()
                 .start();
     }
